@@ -12,17 +12,14 @@ public class JwtService {
     @ConfigProperty(name = "mp.jwt.verify.issuer")
     String issuer;
 
-    /**
-     * Raw HMAC secret (UTF-8). Must match the Base64URL {@code k} in {@code jwt-secret.jwk}
-     * used by {@code smallrye.jwt.verify.key.location}.
-     */
+    /** Raw HMAC secret (UTF-8). Same value content/courses use to verify tokens. */
     @ConfigProperty(name = "react-cms.jwt.hmac-secret")
     String hmacSecret;
 
     @ConfigProperty(name = "smallrye.jwt.new-token.lifespan", defaultValue = "3600")
     long lifespanSeconds;
 
-    /** Must match {@code kid} in jwt-secret.jwk / smallrye.jwt.token.kid on verifying services. */
+    /** Stable kid stamped on signed tokens (matches smallrye.jwt.token.kid on verifying services). */
     @ConfigProperty(name = "smallrye.jwt.new-token.kid", defaultValue = "react-cms-hs256")
     String keyId;
 
