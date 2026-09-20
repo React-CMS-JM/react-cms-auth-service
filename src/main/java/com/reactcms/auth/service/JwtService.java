@@ -22,6 +22,10 @@ public class JwtService {
     @ConfigProperty(name = "smallrye.jwt.new-token.lifespan", defaultValue = "3600")
     long lifespanSeconds;
 
+    /** Must match {@code kid} in jwt-secret.jwk / smallrye.jwt.token.kid on verifying services. */
+    @ConfigProperty(name = "smallrye.jwt.new-token.kid", defaultValue = "react-cms-hs256")
+    String keyId;
+
     public String generateToken(String userId, String email, Collection<String> roleNames,
             Collection<String> permissions) {
         return Jwt.issuer(issuer)
@@ -29,6 +33,8 @@ public class JwtService {
                 .upn(email)
                 .groups(Set.copyOf(roleNames))
                 .claim("permissions", permissions)
+                .jws()
+                .keyId(keyId)
                 .signWithSecret(hmacSecret);
     }
 
