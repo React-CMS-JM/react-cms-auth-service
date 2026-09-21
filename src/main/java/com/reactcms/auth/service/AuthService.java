@@ -7,6 +7,7 @@ import com.reactcms.auth.dto.MeResponse;
 import com.reactcms.auth.dto.UpdateUserRequest;
 import com.reactcms.auth.dto.UserDto;
 import com.reactcms.auth.dto.UserStatsDto;
+import com.reactcms.auth.dto.UserSummaryDto;
 import com.reactcms.auth.entity.RoleEntity;
 import com.reactcms.auth.entity.UserEntity;
 import com.reactcms.auth.util.DtoMapper;
@@ -17,6 +18,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,6 +75,30 @@ public class AuthService {
         long total = UserEntity.count();
         long banned = UserEntity.count("isBanned = ?1", true);
         return new UserStatsDto(total, banned);
+    }
+
+    /** Batch lookup by id for author labels (empty / unknown ids are skipped). */
+    public List<UserSummaryDto> usersByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
+        }
+        Set<String> unique = new HashSet<>();
+        for (String id : ids) {
+            if (id != null && !id.isBlank()) {
+                unique.add(id.trim());
+            }
+        }
+        if (unique.isEmpty()) {
+            return List.of();
+        }
+        List<UserSummaryDto> result = new ArrayList<>();
+        for (String id : unique) {
+            UserEntity user = UserEntity.findById(id);
+            if (user != null) {
+                result.add(DtoMapper.toUserSummaryDto(user));
+            }
+        }
+        return result;
     }
 
     public UserDto getUser(String id) {

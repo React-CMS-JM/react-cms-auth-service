@@ -5,6 +5,7 @@ import com.reactcms.auth.dto.CreateUserRequest;
 import com.reactcms.auth.dto.UpdateUserRequest;
 import com.reactcms.auth.dto.UserDto;
 import com.reactcms.auth.dto.UserStatsDto;
+import com.reactcms.auth.dto.UserSummaryDto;
 import com.reactcms.auth.service.AuthService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -14,8 +15,10 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.List;
 
 @Path("/api/users")
@@ -38,6 +41,19 @@ public class UserResource {
     @Path("/stats")
     public UserStatsDto stats() {
         return authService.userStats();
+    }
+
+    @GET
+    @Path("/by-ids")
+    public List<UserSummaryDto> byIds(@QueryParam("ids") String ids) {
+        if (ids == null || ids.isBlank()) {
+            return List.of();
+        }
+        List<String> parsed = Arrays.stream(ids.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+        return authService.usersByIds(parsed);
     }
 
     @GET

@@ -3,6 +3,7 @@ package com.reactcms.auth.util;
 import com.reactcms.auth.dto.PermissionDto;
 import com.reactcms.auth.dto.RoleDto;
 import com.reactcms.auth.dto.UserDto;
+import com.reactcms.auth.dto.UserSummaryDto;
 import com.reactcms.auth.entity.PermissionEntity;
 import com.reactcms.auth.entity.RoleEntity;
 import com.reactcms.auth.entity.UserEntity;
@@ -33,6 +34,14 @@ public final class DtoMapper {
                 roleIds,
                 user.createdAt,
                 user.updatedAt);
+    }
+
+    public static UserSummaryDto toUserSummaryDto(UserEntity user) {
+        return new UserSummaryDto(
+                user.id,
+                user.firstName,
+                user.lastName,
+                AvatarColor.fromEmail(user.email));
     }
 
     public static RoleDto toRoleDto(RoleEntity role) {
