@@ -4,6 +4,7 @@ import com.reactcms.auth.dto.BanUserRequest;
 import com.reactcms.auth.dto.CreateUserRequest;
 import com.reactcms.auth.dto.UpdateUserRequest;
 import com.reactcms.auth.dto.UserDto;
+import com.reactcms.auth.dto.UserStatsDto;
 import com.reactcms.auth.service.AuthService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -31,6 +32,12 @@ public class UserResource {
     @GET
     public List<UserDto> list() {
         return authService.listUsers();
+    }
+
+    @GET
+    @Path("/stats")
+    public UserStatsDto stats() {
+        return authService.userStats();
     }
 
     @GET

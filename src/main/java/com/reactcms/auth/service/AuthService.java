@@ -6,6 +6,7 @@ import com.reactcms.auth.dto.LoginResponse;
 import com.reactcms.auth.dto.MeResponse;
 import com.reactcms.auth.dto.UpdateUserRequest;
 import com.reactcms.auth.dto.UserDto;
+import com.reactcms.auth.dto.UserStatsDto;
 import com.reactcms.auth.entity.RoleEntity;
 import com.reactcms.auth.entity.UserEntity;
 import com.reactcms.auth.util.DtoMapper;
@@ -66,6 +67,12 @@ public class AuthService {
 
     public List<UserDto> listUsers() {
         return DtoMapper.toUserDtos(UserEntity.listAll());
+    }
+
+    public UserStatsDto userStats() {
+        long total = UserEntity.count();
+        long banned = UserEntity.count("isBanned = ?1", true);
+        return new UserStatsDto(total, banned);
     }
 
     public UserDto getUser(String id) {
